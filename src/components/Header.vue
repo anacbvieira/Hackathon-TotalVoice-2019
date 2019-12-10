@@ -55,6 +55,7 @@ body {
 }
 
 .logociaaerea {
-  height: 190px;
+  height: 155px;
+  background: #E5E5E5
 }
 </style>

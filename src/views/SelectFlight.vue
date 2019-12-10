@@ -4,13 +4,13 @@
     <div class="lista-voo">
       <div class="selecao">
         <div>
-          <h2>Selecione o voo:</h2>
+          <h2>Selecione o voo: </h2>
         </div>
         <div>
-          <select class="localiza" name="select-voo">
-            <option value>Selecione</option>
-            <option v-for="codigo in codigos" v-bind:key="codigo">{{codigo}}</option>
-          </select>
+          <Autocomplete :items="flight"
+            filterby="codigo"
+            title="Selecione o voo..."
+            @selected="flightSelected"/>
         </div>
       </div>
       <div class="informacao-voo">
@@ -21,11 +21,11 @@
         <div class="card">
           <div class="row">
             <div class="col-md">Local de Partida:</div>
-            <div class="col-md">partida.local</div>
+            <div class="col-md"> {{selectedFlight.arrival}} </div>
           </div>
           <div class="row">
-            <div class="col-md">Data/Hora:</div>
-            <div class="col-md">partida.datetime</div>
+            <div class="col-md">Data/Hora: </div>
+            <div class="col-md">{{selectedFlight.arrival_datetime}} </div>
           </div>
         </div>
 
@@ -36,11 +36,11 @@
         <div class="card">
           <div class="row">
             <div class="col-md">Local de Chegada:</div>
-            <div class="col-md">local_chegada.nome</div>
+            <div class="col-md">{{selectedFlight.departure}}</div>
           </div>
           <div class="row">
             <div class="col-md">Data/Hora:</div>
-            <div class="col-md">chegada.datetime</div>
+            <div class="col-md">{{selectedFlight.departure_datetime}}</div>
           </div>
         </div>
       </div>
@@ -49,10 +49,10 @@
           <h2>Informe o portão:</h2>
         </div>
         <div>
-          <select class="localiza" name="select-gate">
-            <option value>Selecione</option>
-            <option v-for="codigo in codigos" v-bind:key="codigo">{{codigo}}</option>
-          </select>
+          <Autocomplete :items="gate"
+            filterby="name"
+            title="Selecione o portão..."
+            @selected="gateSelected"/>
         </div>
     </div>
     <div class="confirmacao">
@@ -61,9 +61,8 @@
           Confirmar voo</button>
       </div>
       <div>
-        <a href="altervoo">
-          <button class="btn-alter">Alterar voo</button>
-        </a>
+        <router-link to="alterflight">
+          <button class="btn-alter">Alterar voo</button></router-link>
       </div>
     </div>
   </div>
@@ -73,16 +72,38 @@
 <script>
 import Header from '@/components/Header.vue'
 import swal from 'sweetalert'
+import gate from '../assets/gate'
+import flight from '../assets/flight'
+import Autocomplete from '../components/Autocomplete'
 
 export default {
-  name: 'header',
+  name: 'selectflight',
+  data () {
+    return {
+      gate: [],
+      flight: [],
+      selectedFlight: Object
+    }
+  },
   components: {
-    Header
+    Header,
+    Autocomplete
   },
   methods: {
     meuclick () {
       swal('Ação finalizada', 'Confirmação enviada', 'success')
+    },
+    gateSelected (gate) {
+      console.log(`Gate Selected:\nid: ${gate.id}\nname: ${gate.name}`)
+    },
+    flightSelected (flight) {
+      this.selectedFlight = flight
+      console.log(`Flight Selected:\narrival: ${flight.arrival}\ndeparture: ${flight.departure}\narrival_datetime: ${flight.arrival_datetime}\ndeparture_datetime: ${flight.departure_datetime}\ncodigo: ${flight.codigo}`)
     }
+  },
+  mounted () {
+    this.gate = gate
+    this.flight = flight
   }
 }
 </script>
@@ -115,8 +136,8 @@ export default {
   background: #ffffff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06);
   border-radius: 8px;
-  width: 534px;
-  height: 350px;
+  width: 500px;
+  height: 300px;
   left: 245px;
   top: 568px;
 }

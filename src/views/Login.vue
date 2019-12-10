@@ -7,25 +7,65 @@
      <h1>Login</h1>
     </div>
     <div class="usuario">
-      <input type="email" name="usuario" class="form-control" placeholder="Usuário">
+      <input type="email" name="email" class="form-control" placeholder="E-mail" v-model="email">
       <br/>
       <br/>
-      <input type="password" name="password" class="form-control" placeholder="Senha">
+      <input type="password" name="password" class="form-control" placeholder="Senha" v-model="password">
+    </div>
+    <div v-if=PassWrong>
+      <label >User or password is invalid </label>
     </div>
 
     <div >
-      <button class="btn-login">Entrar</button>
+      <button
+      class="btn-login"
+      v-on:click="Login()">Entrar</button>
     </div>
   </div>
 </template>
 
 <script>
+
 export default {
   name: 'login',
   data () {
-    return {}
+    return {
+      // email: 'josephdsbr@gmail.com',
+      // password: '123456',
+      email: '',
+      password: '',
+      PassWrong: false
+    }
   },
-  methods: {}
+  methods: {
+    Login () {
+      if (!this.password || !this.email) {
+        this.PassWrong = true
+        return null
+      }
+      this.$http.post(`${this.$config.server}/sessions`, { 'email': this.email, 'password': this.password })
+        .then((user) => {
+          debugger
+          if (user.data.token) {
+            localStorage.setItem('user', JSON.stringify(user.data))
+            localStorage.setItem('token', user.data.accessToken)
+            this.$http.defaults.headers.common['Authorization'] = 'Bearer' + user.data.token
+            this.$router.push({ name: 'selectflight' })
+          }
+        })
+        .catch((ex) => {
+          debugger
+          this.PassWrong = true
+          console.log(ex)
+        })
+
+      // const {email,password} = user;
+      // e isso aqui ? Sei lá, foi um jeito de juntar os dois e pegar o token...não? hauha tipo aqui:
+      // let user = {this.email, this.password};
+      // let resp = this.getToken(this.user);
+      // return resp
+    }
+  }
 }
 </script>
 

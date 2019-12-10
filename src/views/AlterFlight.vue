@@ -14,7 +14,7 @@
           </div>
           <div class="row">
             <div class="col-md">Data/Hora:</div>
-            <datetime type="datetime" v-model="datetime" name="newtime_partida"></datetime>
+            <datetime type="datetime" v-model="datetime_departure" name="newtime_partida"></datetime>
           </div>
         </div>
 
@@ -29,7 +29,7 @@
           </div>
           <div class="row">
             <div class="col-md">Data/Hora:</div>
-            <datetime type="datetime" v-model="datetime" name="newtime_chegada" class="theme-blue"></datetime>
+            <datetime type="datetime" v-model="datetime_arrival" name="newtime_chegada" class="theme-blue"></datetime>
           </div>
         </div>
       </div>
@@ -38,7 +38,7 @@
           <h2>Informe o portão:</h2>
         </div>
         <div>
-          <select class="localiza" name="select-gate">
+          <select class="localiza" name="select-gate" v-model="gate">
             <option value>Selecione</option>
             <option v-for="codigo in codigos" v-bind:key="codigo">{{codigo}}</option>
           </select>
@@ -50,9 +50,8 @@
           Confirmar</button>
       </div>
       <div>
-        <a href="selectvoo">
-          <button class="btn-alter">Voltar</button>
-        </a>
+        <router-link to="selectflight">
+          <button class="btn-alter">Voltar</button></router-link>
       </div>
     </div>
   </div>
@@ -68,11 +67,33 @@ import Vue from 'vue'
 Vue.component('datetime', Datetime)
 
 export default {
-  name: 'header',
+  name: 'alterflight',
+  data: function () {
+    return {
+      datetime_arrival: '',
+      datetime_departure: '',
+      gate: ''
+    }
+  },
   components: {
     Header
   },
   methods: {
+    // alterdata () {
+    //   if (!this.datetime_arrival) {
+    //     const new_datetime_arrival = this.datetime_arrival,
+    //     voo.datetime_arrival = new_datetime_arrival
+
+    //   }
+    //   if (!this.datetime_departure) {
+    //     const new_datetime_departure = this.datetime_departure,
+    //     voo.datetime_departure = new_datetime_departure
+    //   }
+    //   if (!this.gate) {
+    //     const new_gate = this.gate,
+    //     voo.gate = new_gate
+    //   }
+    // },
     meuclick () {
       swal('Ação finalizada', 'Confirmação enviada', 'success')
     }
@@ -86,6 +107,9 @@ export default {
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  background: #E5E5E5;
+  color: #3e3e3e;
+  font-size: 16px;
 }
 
 .selecao {
@@ -131,7 +155,7 @@ export default {
     rgba(1, 161, 255, 0.14) 0.01%,
     #017aff 101.95%
   );
-  width: 500px;
+  width: 490px;
   height: 1px;
   left: 298px;
   top: 789px;
