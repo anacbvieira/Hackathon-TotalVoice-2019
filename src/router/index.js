@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import AlterFlight from '../views/AlterFlight.vue'
 import SelectFlight from '../views/SelectFlight.vue'
 import Login from '../views/Login.vue'
+import Options from '../views/SelectActions.vue'
 
 Vue.use(VueRouter)
 
@@ -28,6 +29,11 @@ const router = new VueRouter({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/options',
+      name: 'options',
+      component: Options
     }
   ]
 })

@@ -124,16 +124,17 @@ export default {
   position: relative;
 }
 .input {
-  height: 30px;
+  height: 26px;
   border-radius: 5px;
-  font-size: 24px;
+  font-size: 18px;
   cursor: text;
-  width: 211px;
+  width: 148px;
   display: flex;
   justify-content: center;
   align-items: center;
   background: white;
-  color: #3e3e3e
+  color: #3e3e3e;
+  margin-inline-start: 3px;
 }
 .close {
   position: absolute;
@@ -141,7 +142,7 @@ export default {
   top: 0px;
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 20px;
   color: lightgrey;
   cursor: pointer;
 }

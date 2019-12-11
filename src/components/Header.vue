@@ -30,9 +30,6 @@ export default {
 </script>
 
 <style>
-body {
-  background: #e5e5e5;
-}
 .topo {
   width: 100%;
   height: 70px;
@@ -55,7 +52,7 @@ body {
 }
 
 .logociaaerea {
-  height: 155px;
-  background: #E5E5E5
+  height: 100px;
+  background: #E5E5E5;
 }
 </style>

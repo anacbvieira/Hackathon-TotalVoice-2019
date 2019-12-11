@@ -1,9 +1,5 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <!-- <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>-->
-    </div>
     <router-view />
   </div>
 </template>
@@ -21,9 +17,12 @@
 }
 
 body {
-  height: 100%;
+  position: absolute;
   margin: 0;
   padding: 0;
-  background: #E5E5E5
+  background: #E5E5E5;
+  width: 100%;
+  height: 100%;
+  font-family: 'Montserrat'
 }
 </style>

@@ -1,12 +1,13 @@
 <template>
   <div id="login">
-    <div id="logo">
+    <div class="logo">
       <img alt="Aircom logo" src="../assets/aircom-vertical-branco 1.png" width="207px" height="164px">
     </div>
     <div>
      <h1>Login</h1>
     </div>
-    <div class="usuario">
+    <div class="profile">
+      <div class="user">
       <input type="email" name="email" class="form-control" placeholder="E-mail" v-model="email">
       <br/>
       <br/>
@@ -15,7 +16,7 @@
     <div v-if=PassWrong>
       <label >User or password is invalid </label>
     </div>
-
+    </div>
     <div >
       <button
       class="btn-login"
@@ -50,7 +51,7 @@ export default {
             localStorage.setItem('user', JSON.stringify(user.data))
             localStorage.setItem('token', user.data.accessToken)
             this.$http.defaults.headers.common['Authorization'] = 'Bearer' + user.data.token
-            this.$router.push({ name: 'selectflight' })
+            this.$router.push({ name: 'options' })
           }
         })
         .catch((ex) => {
@@ -71,7 +72,6 @@ export default {
 
 <style>
 body{
-  background: linear-gradient(40.29deg, #0079FF 4.68%, #00A9FF 97.61%);
   text-align: center;
   color: white;
   width: 100%;
@@ -104,5 +104,8 @@ top: 616px;
 background: #FFFFFF;
 box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06);
 border-radius: 8px;
+}
+.logo{
+  margin: 50px
 }
 </style>
