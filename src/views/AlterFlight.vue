@@ -66,6 +66,9 @@
       <div class="confirmacao">
         <Confirm v-on:click.native="SendMensage(flight)"></Confirm>
       </div>
+      <div>
+        <router-link to="options"><button class="btn-back">Voltar</button></router-link>
+    </div>
     </div>
   </div>
 </template>

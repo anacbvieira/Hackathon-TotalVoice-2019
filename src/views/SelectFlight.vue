@@ -50,7 +50,7 @@
           </div>
           <div class="row">
             <div >Data/Hora:</div>
-            <div > </div>
+            <div > {{flight.departure_date}}</div>
           </div>
         </div>
         <div class="icon"></div>
@@ -63,6 +63,9 @@
       </div>
     <div class="confirmacao">
       <Confirm @click="SendMensage(flight)"></Confirm>
+      <div>
+    <router-link to="options"><button class="btn-back">Voltar</button></router-link>
+  </div>
     </div>
   </div>
   </div>
@@ -78,8 +81,8 @@ export default {
   data () {
     return {
       gate: '',
-      flight: '',
-      info: Array,
+      flight: [],
+      info: [],
       FilteredFlight: [],
       FilteredGate: [],
       modal: false
@@ -104,6 +107,9 @@ export default {
     },
     SetFlight (flight) {
       this.flight = flight
+      debugger
+      this.flight.departure_date = new Date(this.flight.departure_date).toLocaleString('pt-BR')
+      this.flight.arrival_date = new Date(this.flight.arrival_date).toLocaleString('pt-BR')
       this.modal = false
       console.log(flight)
     },
