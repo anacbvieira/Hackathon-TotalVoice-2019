@@ -99,7 +99,7 @@ export default {
     },
     FilterFlight () {
       this.FilteredFlight = this.info.filter(dado =>
-        dado.code.toLowerCase().startsWith(this.flight.toLowerCase())
+        dado.code.toLowerCase().startsWith(this.flight.code.toLowerCase())
       )
     },
     SetFlight (flight) {
