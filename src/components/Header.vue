@@ -35,7 +35,7 @@ export default {
   height: 70px;
   left: 0px;
   top: 0px;
-  background: linear-gradient(3.2deg, #0079ff 4.68%, #00a9ff 97.61%);
+  background: #000080;
 }
 
 .container {
@@ -43,7 +43,8 @@ export default {
   justify-content: space-between;
   align-content: center;
   align-items: center;
-  margin: none;
+  margin-left: 30px;
+  margin-right: 30px;
   padding: none;
 }
 
@@ -53,6 +54,6 @@ export default {
 
 .logociaaerea {
   height: 100px;
-  background: #E5E5E5;
+  background: black;
 }
 </style>

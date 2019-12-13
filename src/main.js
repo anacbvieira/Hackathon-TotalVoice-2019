@@ -5,7 +5,7 @@ import store from './store'
 import { Datetime } from 'vue-datetime'
 import 'vue-datetime/dist/vue-datetime.css'
 import Axios from 'axios'
-import config from './config'
+import config from './service/config'
 
 Vue.use(Datetime)
 

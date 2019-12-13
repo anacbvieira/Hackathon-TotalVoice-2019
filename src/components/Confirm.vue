@@ -1,7 +1,7 @@
 <template>
   <div class="btn">
     <div>
-    <button class="btn-confirm" v-on:click="meuclick()">Finalizar</button>
+    <button class="btn-confirm">Finalizar</button>
   </div>
   <div>
     <router-link to="options"><button class="btn-back">Voltar</button></router-link>
@@ -10,19 +10,9 @@
 </template>
 
 <script>
-import swal from 'sweetalert'
 
 export default {
-  name: 'Confirm',
-  methods: {
-    // Fazer a integração com o back end e enviar a mensagem de confirmação do voo
-    // sendMensage () {
-
-    // },
-    meuclick () {
-      swal('Ação finalizada', 'Confirmação enviada', 'success')
-    }
-  }
+  name: 'Confirm'
 }
 </script>
 

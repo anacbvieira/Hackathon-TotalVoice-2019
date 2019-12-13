@@ -3,42 +3,39 @@
     <Header></Header>
     <div class="lista-voo">
       <div class="lista">
-      <div class="selecao">
-        <div>
-          Selecione o voo:
-        </div>
-        <div>
-          <Autocomplete :items="flight"
-            filterby="codigo"
-            title="Selecione o voo..."
-            @selected="flightSelected"/>
+        <div class="selecao">
+          <div>
+            Selecione o voo:
+          </div>
+          <div>
+            <input type="text"
+            autocomplete="off"
+            v-model="flight.code"
+            @input="FilterFlight"
+            class="enterdata"
+            @focus="modal = true"/>
+            <div v-if="FilteredFlight && modal">
+              <ul class="filterdata">
+                <li v-for="FilterFlight in FilteredFlight "
+                  :key="FilterFlight.code"
+                  @click="SetFlight(FilterFlight)"
+                  class="listdata">
+                  {{ FilterFlight.code }}
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="selecao">
-        <div>
-          Informe o portão:
-        </div>
-        <div>
-          <Autocomplete :items="gate"
-            filterby="name"
-            title="Selecione o portão..."
-            @selected="gateSelected"/>
-        </div>
-      </div>
-    </div>
-      <div class="alter-voo">
-        <div class="cards">
+      <div class="info-voo">
+        <div class="card">
           <div class="row">
-            <div class="col-md">Local de Partida:</div>
-            <div class="col-md">{{selectedFlight.arrival}}</div>
+            <div>Local de Partida:</div>
+            <div> {{flight.origin}} </div>
           </div>
           <div class="row">
-            <div class="col-md">Data/Hora:</div>
-            <div class="col-md">{{selectedFlight.arrival_datetime}} </div>
-          </div>
-          <div class="row">
-            <div class="col-md">Alterar Data/Hora para:</div>
-            <datetime type="datetime" v-model="datetime_departure" place></datetime>
+            <div>Data/Hora: </div>
+            <datetime type="datetime" v-model="flight.arrival_date" locale='br'></datetime>
           </div>
         </div>
 
@@ -46,89 +43,217 @@
           <img alt="plane" src="../assets/airplane.png" width="24" height="24" />
         </div>
 
-        <div class="cards">
+        <div class="card">
           <div class="row">
-            <div class="col-md">Local de Chegada:</div>
-            <div class="col-md">{{selectedFlight.departure}}</div>
+            <div>Local de Chegada:</div>
+            <div>{{flight.destiny}}</div>
           </div>
           <div class="row">
-            <div class="col-md">Data/Hora:</div>
-            <div class="col-md">{{selectedFlight.departure_datetime}} </div>
+            <div>Data/Hora:</div>
+            <datetime type="datetime" v-model="flight.departure_date" place></datetime>
           </div>
+        </div>
+
+        <div class="icon">
+        </div>
+        <div class="card">
           <div class="row">
-            <div class="col-md">Alterar Data/Hora para:</div>
-            <datetime type="datetime" v-model="datetime_departure" place></datetime>
+            <div>Portão de embarque:</div>
+            <input type="text" v-model="flight.port" class="inputgate">
           </div>
         </div>
       </div>
-    <div class="confirmacao">
-      <Confirm></Confirm>
+      <div class="confirmacao">
+        <Confirm v-on:click.native="Finish(flight)"></Confirm>
+      </div>
     </div>
-  </div>
   </div>
 </template>
 
 <script>
 import Header from '@/components/Header.vue'
+import Confirm from '../components/Confirm'
 import { Datetime } from 'vue-datetime'
 import Vue from 'vue'
-import Confirm from '../components/Confirm'
-import gate from '../assets/gate'
-import flight from '../assets/flight'
-import Autocomplete from '../components/Autocomplete'
+import swal from 'sweetalert'
+import { Settings } from 'luxon'
 
+Settings.defaultLocale = 'pt-br'
 Vue.component('datetime', Datetime)
 
 export default {
-  name: 'alterflight',
-  data: function () {
+  name: 'alter',
+  data () {
     return {
-      gate: [],
+      gate: '',
       flight: [],
-      selectedFlight: Object
+      info: [],
+      FilteredFlight: [],
+      modal: false,
+      datetime_departure: '',
+      datetime_arival: ''
     }
   },
   components: {
     Header,
-    Confirm,
-    Autocomplete
+    Confirm
   },
   methods: {
-    gateSelected (gate) {
-      console.log(`Gate Selected:\nid: ${gate.id}\nname: ${gate.name}`)
+    GetItems () {
+      this.$http.get(`${this.$config.server}/flights`)
+        .then(response => {
+          this.info = response.data
+        })
+        .catch(ex => console.log(ex))
     },
-    flightSelected (flight) {
-      this.selectedFlight = flight
-      console.log(`Flight Selected:\narrival: ${flight.arrival}\ndeparture: ${flight.departure}\narrival_datetime: ${flight.arrival_datetime}\ndeparture_datetime: ${flight.departure_datetime}\ncodigo: ${flight.codigo}`)
+    FilterFlight () {
+      this.FilteredFlight = this.info.filter(dado =>
+        dado.code.toLowerCase().startsWith(this.flight.code.toLowerCase())
+      )
+    },
+    SetFlight (flight) {
+      this.flight = flight
+      this.modal = false
+    },
+    Finish (flight) {
+      if (this.SendMensage(flight)) swal('Ação finalizada', 'Confirmação enviada', 'success')
+      else alert('Ocorreu um erro tente novamente')
+    },
+    SendMensage (flight) {
+      this.$http.put(`${this.$config.server}/flights-lists/${flight.id}`, this.flight)
+        .then((message) => {
+          this.flight = {}
+          return true
+        })
+        .catch(ex => {
+          console.log(ex)
+          return false
+        })
     }
   },
   mounted () {
-    this.gate = gate
-    this.flight = flight
+    this.GetItems()
   }
 }
 </script>
 
 <style>
+.lista {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.selecao {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 20px;
+  margin: 10px;
+  position: relative;
+  color: white;
+}
 .lista-voo {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  background: #E5E5E5;
-  color: #3e3e3e;
-  font-size: 16px;
+  color: white;
 }
-.alter-voo {
+.info-voo {
   background: #ffffff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06);
   border-radius: 8px;
-  width: 500px;
-  height: 324px;
-  margin-bottom: 12px;
+  width: 630px;
+  margin: 12px;
 }
-.cards{
-  margin-top: -10px;
-  margin-bottom: -10px;
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  line-height: 20px;
+  color: #3e3e3e;
+  margin: 10px;
+}
+.card{
+  margin: 30px;
+}
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background: linear-gradient(
+    91.02deg,
+    rgba(1, 161, 255, 0.14) 0.01%,
+    #017aff 101.95%
+  );
+  width: 619px;
+  height: 1px;
+  left: 298px;
+  top: 789px;
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
+.confirmacao {
+  display: flex;
+  justify-content: flex-end;
+  align-content: center;
+  align-items: flex-end;
+  margin: 7px;
+  padding: none;
+  height: 50px;
+}
+.enterdata{
+  height: 26px;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: text;
+  width: 148px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #3e3e3e;
+  margin-inline-start: 3px;
+}
+.listdata{
+  list-style-type: none;
+  text-align:center;
+  font-size: 16px;
+  cursor: pointer;
+  border: black;
+  border-color: #3e3e3e;
+  background: white;
+  margin: 2px;
+  padding: 2px;
+  height: 26px;
+  border-radius: 5px;
+}
+.filterdata{
+  height: 26px;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: text;
+  width: 148px;
+  color: #3e3e3e;
+  margin: 2px;
+  padding: 2px;
+  margin-inline-start: 3px;
+}
+.inputgate{
+  margin-inline-start: 3px;
+  height: 26px;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: text;
+  width: 148px;
+}
+.vdatetime-input{
+  margin-inline-start: 3px;
+  height: 26px;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: text;
+  width: 164px;
+font-size: 14px;
 }
 </style>

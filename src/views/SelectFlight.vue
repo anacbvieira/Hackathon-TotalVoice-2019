@@ -8,33 +8,34 @@
           Selecione o voo:
         </div>
         <div>
-          <Autocomplete :items="flight"
-            filterby="codigo"
-            title="Selecione o voo..."
-            @selected="flightSelected"/>
-        </div>
-      </div>
-      <div class="selecao">
-        <div>
-          Informe o portão:
-        </div>
-        <div>
-          <Autocomplete :items="gate"
-            filterby="name"
-            title="Selecione o portão..."
-            @selected="gateSelected"/>
+          <input type="text"
+          autocomplete="off"
+          v-model="flight.code"
+          @input="FilterFlight"
+          class="enterdata"
+          @focus="modal = true"/>
+          <div v-if="FilteredFlight && modal">
+            <ul class="filterdata">
+              <li v-for="FilterFlight in FilteredFlight "
+                :key="FilterFlight.code"
+                @click="SetFlight(FilterFlight)"
+                class="listdata">
+                {{ FilterFlight.code }}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
       <div class="informacao-voo">
-        <div class="card">
+        <div class="cards">
           <div class="row">
-            <div class="col-md">Local de Partida:</div>
-            <div class="col-md"> {{selectedFlight.arrival}} </div>
+            <div >Local de Partida:</div>
+            <div >{{flight.origin}} </div>
           </div>
           <div class="row">
-            <div class="col-md">Data/Hora: </div>
-            <div class="col-md">{{selectedFlight.arrival_datetime}} </div>
+            <div >Data/Hora: </div>
+            <div >{{flight.arrival_date}} </div>
           </div>
         </div>
 
@@ -42,19 +43,26 @@
           <img alt="plane" src="../assets/airplane.png" width="24" height="24" />
         </div>
 
-        <div class="card">
+        <div class="cards">
           <div class="row">
-            <div class="col-md">Local de Chegada:</div>
-            <div class="col-md">{{selectedFlight.departure}}</div>
+            <div >Local de Chegada:</div>
+            <div >{{flight.destiny}}</div>
           </div>
           <div class="row">
-            <div class="col-md">Data/Hora:</div>
-            <div class="col-md">{{selectedFlight.departure_datetime}}</div>
+            <div >Data/Hora:</div>
+            <div >{{flight.gate}}</div>
+          </div>
+        </div>
+        <div class="icon"></div>
+        <div class="cards">
+          <div class="row">
+            <div>Portão de embarque:</div>
+            <div>{{flight.port}}</div>
           </div>
         </div>
       </div>
     <div class="confirmacao">
-      <Confirm></Confirm>
+      <Confirm @click="Finish(flight)"></Confirm>
     </div>
   </div>
   </div>
@@ -63,36 +71,59 @@
 <script>
 import Header from '@/components/Header.vue'
 import Confirm from '../components/Confirm'
-import gate from '../assets/gate'
-import flight from '../assets/flight'
-import Autocomplete from '../components/Autocomplete'
+import swal from 'sweetalert'
 
 export default {
-  name: 'selectflight',
+  name: 'alter',
   data () {
     return {
-      gate: [],
-      flight: [],
-      selectedFlight: Object
+      gate: '',
+      flight: '',
+      info: Array,
+      FilteredFlight: [],
+      FilteredGate: [],
+      modal: false
     }
   },
   components: {
     Header,
-    Confirm,
-    Autocomplete
+    Confirm
   },
   methods: {
-    gateSelected (gate) {
-      console.log(`Gate Selected:\nid: ${gate.id}\nname: ${gate.name}`)
+    GetItems () {
+      this.$http.get(`${this.$config.server}/flights`)
+        .then(response => {
+          this.info = response.data
+        })
+        .catch(ex => console.log(ex))
     },
-    flightSelected (flight) {
-      this.selectedFlight = flight
-      console.log(`Flight Selected:\narrival: ${flight.arrival}\ndeparture: ${flight.departure}\narrival_datetime: ${flight.arrival_datetime}\ndeparture_datetime: ${flight.departure_datetime}\ncodigo: ${flight.codigo}`)
+    FilterFlight () {
+      this.FilteredFlight = this.info.filter(dado =>
+        dado.code.toLowerCase().startsWith(this.flight.toLowerCase())
+      )
+    },
+    SetFlight (flight) {
+      this.flight = flight
+      this.modal = false
+      console.log(flight)
+    },
+    SetGate (gate) {
+      this.gate = gate
+    },
+    Finish (flight) {
+      if (this.SendMensage(flight)) swal('Ação finalizada', 'Confirmação enviada', 'success')
+      else alert('Ocorreu um erro tente novamente')
+    },
+    SendMensage (flight) {
+      this.$http.post(`${this.$config.server}/flights-lists/${flight.id}`, this.flight)
+        .then((message) => {
+          this.flight = {}
+        })
+        .catch(ex => console.log(ex))
     }
   },
   mounted () {
-    this.gate = gate
-    this.flight = flight
+    this.GetItems()
   }
 }
 </script>
@@ -116,23 +147,15 @@ export default {
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  color: #3e3e3e;
 }
 .informacao-voo {
   background: #ffffff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06);
   border-radius: 8px;
-  width: 500px;
-  height: 287px;
+  width: 630px;
+  height: 321px;
   margin: 12px;
-}
-.row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 16px;
-  line-height: 20px;
-  color: #3e3e3e;
-  margin: 30px;
 }
 .icon {
   display: flex;
@@ -143,7 +166,7 @@ export default {
     rgba(1, 161, 255, 0.14) 0.01%,
     #017aff 101.95%
   );
-  width: 490px;
+  width: 619px;
   height: 1px;
   left: 298px;
   top: 789px;
@@ -156,5 +179,47 @@ export default {
   margin: 7px;
   padding: none;
   height: 50px;
+}
+.enterdata{
+  height: 26px;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: text;
+  width: 148px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  color: #3e3e3e;
+  margin-inline-start: 3px;
+}
+.listdata{
+  list-style-type: none;
+  text-align:center;
+  font-size: 16px;
+  cursor: pointer;
+  border: black;
+  border-color: #3e3e3e
+}
+.filterdata{
+  height: 26px;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: text;
+  width: 148px;
+  color: #3e3e3e;
+  margin: 2px;
+  padding: 2px;
+}
+.inputgate{
+  margin-inline-start: 3px;
+  height: 26px;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: text;
+  width: 148px;
+}
+.cards{
+  margin: 30px;
 }
 </style>

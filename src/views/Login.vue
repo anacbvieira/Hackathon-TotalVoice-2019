@@ -31,8 +31,6 @@ export default {
   name: 'login',
   data () {
     return {
-      // email: 'josephdsbr@gmail.com',
-      // password: '123456',
       email: '',
       password: '',
       PassWrong: false
@@ -59,12 +57,6 @@ export default {
           this.PassWrong = true
           console.log(ex)
         })
-
-      // const {email,password} = user;
-      // e isso aqui ? Sei lá, foi um jeito de juntar os dois e pegar o token...não? hauha tipo aqui:
-      // let user = {this.email, this.password};
-      // let resp = this.getToken(this.user);
-      // return resp
     }
   }
 }
@@ -77,6 +69,7 @@ body{
   width: 100%;
   height: 100%;
   font-family: 'Montserrat';
+  background-color: black;
 }
 #app {
   font-family: 'Montserrat';
