@@ -29,6 +29,7 @@ export default {
   align-items: center;
   margin: 100px;
   height: 236px;
+  background: #dcdde1
 }
 .btn-options {
   width: 300px;

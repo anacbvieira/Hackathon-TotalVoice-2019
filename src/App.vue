@@ -20,10 +20,10 @@ body {
   position: absolute;
   margin: 0;
   padding: 0;
-  background: #E5E5E5;
+  background: #dcdde1;
   width: 100%;
   height: 100%;
   font-family: 'Montserrat';
-  color: white
+  color: #3e3e3e
 }
 </style>

@@ -64,7 +64,7 @@
         </div>
       </div>
       <div class="confirmacao">
-        <Confirm v-on:click.native="Finish(flight)"></Confirm>
+        <Confirm v-on:click.native="SendMensage(flight)"></Confirm>
       </div>
     </div>
   </div>
@@ -115,19 +115,16 @@ export default {
       this.flight = flight
       this.modal = false
     },
-    Finish (flight) {
-      if (this.SendMensage(flight)) swal('Ação finalizada', 'Confirmação enviada', 'success')
-      else alert('Ocorreu um erro tente novamente')
-    },
     SendMensage (flight) {
-      this.$http.put(`${this.$config.server}/flights-lists/${flight.id}`, this.flight)
-        .then((message) => {
+      debugger
+      this.$http.put(`${this.$config.server}/flights/${flight.id}`, this.flight)
+        .then(resp => {
+          swal('Ação finalizada', 'Confirmação enviada', 'success')
           this.flight = {}
-          return true
         })
         .catch(ex => {
           console.log(ex)
-          return false
+          return alert('Ocorreu um erro tente novamente')
         })
     }
   },
@@ -150,14 +147,13 @@ export default {
   font-size: 20px;
   margin: 10px;
   position: relative;
-  color: white;
 }
 .lista-voo {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  color: white;
+  background: #dcdde1;
 }
 .info-voo {
   background: #ffffff;

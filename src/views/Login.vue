@@ -69,7 +69,7 @@ body{
   width: 100%;
   height: 100%;
   font-family: 'Montserrat';
-  background-color: black;
+  background-color: #dcdde1;
 }
 #app {
   font-family: 'Montserrat';

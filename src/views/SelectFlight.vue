@@ -35,7 +35,7 @@
           </div>
           <div class="row">
             <div >Data/Hora: </div>
-            <div >{{flight.arrival_date}} </div>
+            <div><span type="date">{{flight.arrival_date}}</span> </div>
           </div>
         </div>
 
@@ -50,7 +50,7 @@
           </div>
           <div class="row">
             <div >Data/Hora:</div>
-            <div >{{flight.gate}}</div>
+            <div > </div>
           </div>
         </div>
         <div class="icon"></div>
@@ -62,7 +62,7 @@
         </div>
       </div>
     <div class="confirmacao">
-      <Confirm @click="Finish(flight)"></Confirm>
+      <Confirm @click="SendMensage(flight)"></Confirm>
     </div>
   </div>
   </div>
@@ -110,16 +110,17 @@ export default {
     SetGate (gate) {
       this.gate = gate
     },
-    Finish (flight) {
-      if (this.SendMensage(flight)) swal('Ação finalizada', 'Confirmação enviada', 'success')
-      else alert('Ocorreu um erro tente novamente')
-    },
     SendMensage (flight) {
+      debugger
       this.$http.post(`${this.$config.server}/flights-lists/${flight.id}`, this.flight)
-        .then((message) => {
+        .then(resp => {
+          swal('Ação finalizada', 'Confirmação enviada', 'success')
           this.flight = {}
         })
-        .catch(ex => console.log(ex))
+        .catch(ex => {
+          console.log(ex)
+          return alert('Ocorreu um erro tente novamente')
+        })
     }
   },
   mounted () {

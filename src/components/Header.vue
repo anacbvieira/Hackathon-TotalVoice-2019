@@ -54,6 +54,6 @@ export default {
 
 .logociaaerea {
   height: 100px;
-  background: black;
+  background: #dcdde1;
 }
 </style>
