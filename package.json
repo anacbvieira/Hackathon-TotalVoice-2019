@@ -17,7 +17,7 @@
     "bootstrap-vue": "^2.1.0",
     "core-js": "^3.4.3",
     "font-awesome": "^4.7.0",
-    "luxon": "^1.21.3",
+    "luxon": "^2.5.2",
     "sweetalert": "^2.1.2",
     "vue": "^2.6.10",
     "vue-bootstrap-typeahead": "^0.2.6",
